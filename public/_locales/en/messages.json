@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "MindSnap — AI Mind Maps & Smart Notes",
+    "description": "Extension name"
+  },
+  "appDescription": {
+    "message": "Turn any webpage into mind maps, flashcards, outlines, summaries and more with AI",
+    "description": "Extension description"
+  }
+}

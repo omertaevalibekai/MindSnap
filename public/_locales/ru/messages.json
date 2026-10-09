@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "MindSnap — AI Mind Maps и Умные Заметки",
+    "description": "Название расширения"
+  },
+  "appDescription": {
+    "message": "Превращает любую веб-страницу в mind map, карточки, outline, summary и другие форматы с помощью AI",
+    "description": "Описание расширения"
+  }
+}

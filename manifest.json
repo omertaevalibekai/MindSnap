@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "MindSnap — Mind Maps & Smart Notes",
+  "version": "1.0.0",
+  "default_locale": "en",
+  "description": "Turn any webpage into mind maps, flashcards, outlines, summaries and more",
+  "permissions": ["activeTab", "storage", "sidePanel", "contextMenus"],
+  "background": {
+    "service_worker": "src/background/service-worker.ts",
+    "type": "module"
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["src/content/content-script.ts"],
+    "run_at": "document_idle"
+  }],
+  "action": {
+    "default_icon": { "16": "icons/logo.png", "32": "icons/logo.png", "48": "icons/logo.png", "128": "icons/logo.png" }
+  },
+  "icons": { "16": "icons/logo.png", "32": "icons/logo.png", "48": "icons/logo.png", "128": "icons/logo.png" },
+  "side_panel": { "default_path": "src/sidepanel/index.html" },
+  "commands": {
+    "snap-page": {
+      "suggested_key": { "default": "Ctrl+Shift+M" },
+      "description": "Snap current page"
+    },
+    "_execute_action": {
+      "suggested_key": { "default": "Ctrl+Shift+Y" },
+      "description": "Open MindSnap"
+    }
+  }
+}
+
+
