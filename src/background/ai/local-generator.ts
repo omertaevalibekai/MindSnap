@@ -10,6 +10,15 @@ interface ParsedPage {
   selectedText?: string;
 }
 
+// Templates follow the page language: Cyrillic-heavy text gets Russian, everything else English.
+let lang: "en" | "ru" = "en";
+const tr = (en: string, ru: string): string => (lang === "ru" ? ru : en);
+const detectLang = (text: string): "en" | "ru" => {
+  const cyrillic = text.match(/[а-яё]/gi)?.length ?? 0;
+  const latin = text.match(/[a-z]/gi)?.length ?? 0;
+  return cyrillic > latin ? "ru" : "en";
+};
+
 const splitSentences = (text: string): string[] =>
   text
     .replace(/\s+/g, " ")
@@ -169,7 +178,7 @@ const buildFlashcards = (title: string, chunks: string[]): Record<string, unknow
   const sentences = splitSentences(chunks.join(" "));
   const cards = sentences.slice(0, 16).map((sentence, index) => ({
     id: `card-${index + 1}`,
-    front: `Что важно знать про: ${shortLabel(sentence, 6)}?`,
+    front: tr(`What matters about: ${shortLabel(sentence, 6)}?`, `Что важно знать про: ${shortLabel(sentence, 6)}?`),
     back: sentence,
     difficulty: index % 3 === 0 ? "easy" : index % 3 === 1 ? "medium" : "hard"
   }));
@@ -183,7 +192,7 @@ const buildSummary = (title: string, chunks: string[]): Record<string, unknown> 
     tldr: sentences.slice(0, 2).join(" "),
     keyPoints: sentences.slice(0, 6).map((point, index) => ({ id: `kp-${index + 1}`, text: point })),
     conclusions: sentences.slice(6, 9),
-    openQuestions: chunks.slice(0, 3).map((chunk) => `Что ещё уточнить про ${shortLabel(chunk, 4)}?`),
+    openQuestions: chunks.slice(0, 3).map((chunk) => tr(`What else to clarify about ${shortLabel(chunk, 4)}?`, `Что ещё уточнить про ${shortLabel(chunk, 4)}?`)),
     metadata: { suggestedTags: tagsFrom(title, chunks) }
   };
 };
@@ -206,7 +215,10 @@ const buildComparison = (title: string, chunks: string[]): Record<string, unknow
   const criteriaNames = ["Clarity", "Depth", "Practical value", "Complexity", "Applicability"];
   return {
     title,
-    intro: `Сравниваем ${safeItems.join(", ")} по критериям ${criteriaNames.slice(0, 3).join(", ")} для практического выбора подхода.`,
+    intro: tr(
+      `Comparing ${safeItems.join(", ")} by ${criteriaNames.slice(0, 3).join(", ")} to pick a practical approach.`,
+      `Сравниваем ${safeItems.join(", ")} по критериям ${criteriaNames.slice(0, 3).join(", ")} для практического выбора подхода.`
+    ),
     items: safeItems,
     criteria: criteriaNames.map((name, index) => ({
       id: `crit-${index + 1}`,
@@ -217,7 +229,7 @@ const buildComparison = (title: string, chunks: string[]): Record<string, unknow
         rating: itemIndex === 0 ? "good" : itemIndex === 1 ? "neutral" : "bad"
       }))
     })),
-    verdict: `Для большинства задач предпочтителен вариант "${safeItems[0]}".`,
+    verdict: tr(`For most tasks, "${safeItems[0]}" is the better choice.`, `Для большинства задач предпочтителен вариант "${safeItems[0]}".`),
     metadata: { suggestedTags: tagsFrom(title, chunks) }
   };
 };
@@ -227,15 +239,18 @@ const buildFeynman = (title: string, chunks: string[]): Record<string, unknown> 
     id: `section-${index + 1}`,
     heading: shortLabel(chunk, 5),
     explanation: chunk.slice(0, 280),
-    example: `Пример: ${shortLabel(splitSentences(chunk)[0] ?? chunk, 12)}`
+    example: `${tr("Example", "Пример")}: ${shortLabel(splitSentences(chunk)[0] ?? chunk, 12)}`
   }));
   return {
     title,
-    analogy: `Представь ${title} как последовательность простых шагов, где каждый блок объясняет следующий.`,
+    analogy: tr(
+      `Think of ${title} as a sequence of simple steps, where each block explains the next.`,
+      `Представь ${title} как последовательность простых шагов, где каждый блок объясняет следующий.`
+    ),
     sections,
-    whyItMatters: `Понимание ${title} помогает быстрее применять материал на практике.`,
-    checkYourself: sections.map((section) => `Объясни своими словами: ${section.heading}`),
-    gaps: sections.map((section) => `Углубить: ${section.heading}`),
+    whyItMatters: tr(`Understanding ${title} helps you apply the material faster.`, `Понимание ${title} помогает быстрее применять материал на практике.`),
+    checkYourself: sections.map((section) => `${tr("Explain in your own words", "Объясни своими словами")}: ${section.heading}`),
+    gaps: sections.map((section) => `${tr("Dig deeper", "Углубить")}: ${section.heading}`),
     metadata: { suggestedTags: tagsFrom(title, chunks) }
   };
 };
@@ -244,17 +259,17 @@ const buildCheatsheet = (title: string, chunks: string[]): Record<string, unknow
   const steps = chunks.slice(0, 6);
   return {
     title,
-    useWhen: `Используй эту шпаргалку, когда нужно быстро применить знания по теме «${title}».`,
+    useWhen: tr(`Use this cheatsheet when you need to quickly apply what you know about "${title}".`, `Используй эту шпаргалку, когда нужно быстро применить знания по теме «${title}».`),
     workflow: steps.map((step, index) => ({
       id: `step-${index + 1}`,
       step: shortLabel(step, 4),
       action: step.slice(0, 200),
-      why: "Снижает риск пропустить важный шаг.",
+      why: tr("Lowers the risk of skipping an important step.", "Снижает риск пропустить важный шаг."),
       redFlags: splitSentences(step).slice(0, 1)
     })),
     decisionRules: steps.slice(0, 4).map((step, index) => ({
       id: `rule-${index + 1}`,
-      if: `Задача связана с «${shortLabel(step, 4)}»`,
+      if: tr(`The task involves "${shortLabel(step, 4)}"`, `Задача связана с «${shortLabel(step, 4)}»`),
       then: step.slice(0, 160)
     })),
     templates: steps.slice(0, 4).map((step, index) => ({
@@ -265,7 +280,7 @@ const buildCheatsheet = (title: string, chunks: string[]): Record<string, unknow
     })),
     pitfalls: steps.slice(0, 4).map((step, index) => ({
       id: `pit-${index + 1}`,
-      mistake: `Пропустить этап «${shortLabel(step, 4)}»`,
+      mistake: tr(`Skipping "${shortLabel(step, 4)}"`, `Пропустить этап «${shortLabel(step, 4)}»`),
       fix: step.slice(0, 160)
     })),
     quickChecks: steps.map((step) => shortLabel(step, 4)).slice(0, 8),
@@ -294,6 +309,7 @@ export const generateLocally = ({
   text: string;
   parsedPage: ParsedPage;
 }): unknown => {
+  lang = detectLang(text);
   const title = parsedPage.title.trim() || "Untitled page";
   const headings = (parsedPage.headings ?? []).map((heading) => heading.trim()).filter(Boolean);
   const paragraphs = (parsedPage.paragraphs ?? []).map((part) => part.trim()).filter(Boolean);

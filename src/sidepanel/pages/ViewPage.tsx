@@ -51,11 +51,8 @@ export const ViewPage = () => {
     [storage?.notebooks]
   );
 
-  if (!item) {
-    return <main className="p-4 text-sm">Item not found</main>;
-  }
-
   const saveNotes = async (content: string): Promise<void> => {
+    if (!item) return;
     setStatus("Saving...");
     const response = await chrome.runtime.sendMessage({
       type: "UPDATE_ITEM_NOTES",
@@ -80,6 +77,10 @@ export const ViewPage = () => {
       if (saveTimer.current) window.clearTimeout(saveTimer.current);
     };
   }, [noteDraft, item?.id]);
+
+  if (!item) {
+    return <main className="p-4 text-sm">Item not found</main>;
+  }
 
   const appendSelectedNode = (): void => {
     if (!selectedNode) return;

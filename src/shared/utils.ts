@@ -15,3 +15,10 @@ export const hashString = async (value: string): Promise<string> => {
     .join("");
 };
 
+
+// Wikipedia-style reference markers: [1], [12][13], [note 1], [a], [citation needed]
+export const stripCitations = (value: string): string =>
+  value
+    .replace(/\[(?:\d+|[a-z]|note \d+|citation needed|нет источника|источник не указан \d* ?дней)\]/gi, "")
+    .replace(/[ \t]{2,}/g, " ")
+    .replace(/ +([.,;:!?])/g, "$1");

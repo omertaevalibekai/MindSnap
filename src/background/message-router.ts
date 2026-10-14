@@ -2,7 +2,7 @@ import { generateLocally, generateQuickNotes } from "./ai/local-generator";
 import { parseResponse } from "./ai/response-parser";
 import { normalizeInput } from "./ai/token-counter";
 import { storageService } from "./storage/storage-service";
-import { hashString, uuid } from "../shared/utils";
+import { hashString, stripCitations, uuid } from "../shared/utils";
 import type { RuntimeMessage } from "../shared/types/messages";
 import type { OutputMode } from "../shared/types/notes";
 
@@ -298,7 +298,16 @@ export const handleMessage = async (message: RuntimeMessage): Promise<unknown> =
       return updatedItem;
     }
     case "SNAP_PAGE": {
-      const { outputMode, depth, parsedPage } = message.payload;
+      const { outputMode, depth } = message.payload;
+      const rawPage = message.payload.parsedPage;
+      const parsedPage = {
+        ...rawPage,
+        title: stripCitations(rawPage.title),
+        text: stripCitations(rawPage.text),
+        headings: (rawPage.headings ?? []).map(stripCitations),
+        paragraphs: (rawPage.paragraphs ?? []).map(stripCitations),
+        lists: (rawPage.lists ?? []).map(stripCitations)
+      };
       const { text, tokens } = normalizeInput(parsedPage.text);
       const key = await cacheKey(outputMode, depth, text);
       let raw = storage.aiCache[key]?.raw ?? "";

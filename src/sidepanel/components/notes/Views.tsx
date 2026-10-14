@@ -506,27 +506,27 @@ export const ComparisonView = ({ data }: { data: unknown }) => {
             <div className="space-y-2">
               <ComparisonSummaryRow
                 marker="+"
-                title="Сильные стороны"
+                title="Strengths"
                 colorClass="text-emerald-700"
                 bgClass="bg-emerald-50"
                 values={entry.pros}
-                emptyText="Сильные стороны не выявлены"
+                emptyText="No clear strengths found"
               />
               <ComparisonSummaryRow
                 marker="-"
-                title="Риски"
+                title="Risks"
                 colorClass="text-rose-700"
                 bgClass="bg-rose-50"
                 values={entry.cons}
-                emptyText="Явные риски не выявлены"
+                emptyText="No clear risks found"
               />
               <ComparisonSummaryRow
                 marker="~"
-                title="Компромиссы"
+                title="Trade-offs"
                 colorClass="text-amber-700"
                 bgClass="bg-amber-50"
                 values={entry.neutral}
-                emptyText="Компромиссы не выделены"
+                emptyText="No trade-offs found"
               />
             </div>
           </article>

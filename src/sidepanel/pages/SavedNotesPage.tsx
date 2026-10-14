@@ -28,7 +28,7 @@ export const SavedNotesPage = () => {
       </header>
       <section className="panel-card space-y-2">
         {itemsWithNotes.length === 0 ? (
-          <p className="text-xs muted">Нет сохраненных заметок.</p>
+          <p className="text-xs muted">No saved notes yet.</p>
         ) : (
           itemsWithNotes.map((item) => (
             <Link key={item.id} to={`/notes/${item.id}`} className="block rounded-md border border-zinc-700 p-2">

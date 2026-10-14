@@ -68,7 +68,7 @@ export const DashboardPage = () => {
         <section className="panel-card">
           <h2 className="mb-2 text-sm font-heading">Projects</h2>
           <div className="space-y-2">
-            {projects.length === 0 ? <p className="text-xs text-slate-400">Проектов пока нет.</p> : projects.map((project) => (
+            {projects.length === 0 ? <p className="text-xs text-slate-400">No projects yet.</p> : projects.map((project) => (
               <Link key={project.id} to={`/knowledge-base?project=${project.id}`} className="block rounded-md border border-zinc-700 p-2 text-xs">
                 <div className="flex items-center gap-2 font-semibold">
                   <span
@@ -85,7 +85,7 @@ export const DashboardPage = () => {
         <section className="panel-card">
           <h2 className="mb-2 text-sm font-heading">Recent</h2>
           <div className="space-y-2">
-            {items.length === 0 ? <p className="text-xs text-slate-400">Пока пусто. Нажмите Snap.</p> : items.map((item) => (
+            {items.length === 0 ? <p className="text-xs text-slate-400">Nothing here yet. Press Snap.</p> : items.map((item) => (
               <Link key={item.id} to={`/view/${item.id}`} className="block rounded-md border border-zinc-700 p-2 text-xs">
                 <div className="font-semibold">{item.sourceTitle}</div>
                 <div className="muted">{item.outputMode}</div>

@@ -388,7 +388,7 @@ export const MindMapCanvas = ({ data, onBranchNotes, onNodeSelect }: MindMapCanv
         <section className="rounded border border-slate-700 bg-slate-900 p-2 text-xs">
           <div className="mb-2 flex items-center justify-between">
             <div className="font-semibold text-slate-100">
-              {expandedListNode.label} - подтемы
+              {expandedListNode.label}: subtopics
             </div>
             <button
               className="rounded border border-slate-600 px-2 py-1 text-[11px]"
