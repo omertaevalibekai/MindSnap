@@ -15,6 +15,8 @@ account, nothing leaves your browser.
 ![Privacy](https://img.shields.io/badge/privacy-100%25%20local-2ea44f)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+<img src="docs/img/dashboard.png" alt="MindSnap side panel next to a Wikipedia article, with output formats to choose from" width="800">
+
 </div>
 
 ---
@@ -40,6 +42,19 @@ keep in a project.
 | ⚖️ **Comparison** | A side-by-side table | Reviews and trade-off analysis |
 | 💡 **Feynman** | The topic explained in simple terms | Complex concepts and technical topics |
 | ⚡ **Cheatsheet** | A compact operational playbook | APIs, syntax, formulas, workflows |
+
+<table>
+<tr>
+<td><img src="docs/img/flashcards.png" alt="Flashcards generated from the article"></td>
+<td><img src="docs/img/cornell.png" alt="Cornell notes generated from the article"></td>
+</tr>
+<tr>
+<td align="center">Flashcards</td>
+<td align="center">Cornell notes</td>
+</tr>
+</table>
+
+<sub>Screenshots show the Wikipedia article <a href="https://en.wikipedia.org/wiki/Photosynthesis">Photosynthesis</a> (CC BY-SA 4.0).</sub>
 
 ## Features
 
@@ -81,6 +96,12 @@ flowchart LR
 | Shared | `src/shared/` | Types and schemas used on both sides of the message boundary |
 
 ## Install
+
+### Download
+
+1. Grab `mindsnap-<version>.zip` from the [latest release](https://github.com/omertaevalibekai/MindSnap/releases/latest) and unzip it.
+2. Open `chrome://extensions` and turn on **Developer mode** (top right).
+3. Click **Load unpacked** and choose the unzipped folder.
 
 ### From source
 
