@@ -40,6 +40,8 @@ interface NodePreviewState {
   theses: string[];
 }
 
+const AUTO_COLLAPSE_LEAVES = 12;
+
 export const MindMapCanvas = ({ data, onBranchNotes, onNodeSelect }: MindMapCanvasProps) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const viewportRef = useRef<d3.Selection<SVGGElement, unknown, null, undefined> | null>(null);
@@ -63,11 +65,21 @@ export const MindMapCanvas = ({ data, onBranchNotes, onNodeSelect }: MindMapCanv
   const selectedNode = useMemo(() => (selectedNodeId ? findById(mappedRoot, selectedNodeId) : null), [mappedRoot, selectedNodeId]);
   const expandedListNode = useMemo(() => (expandedListNodeId ? findById(mappedRoot, expandedListNodeId) : null), [mappedRoot, expandedListNodeId]);
   const childrenCountById = useMemo(() => buildChildrenCountMap(mappedRoot), [mappedRoot]);
+
+  // Big maps open folded to the first level so labels stay readable; double-click a branch to expand it.
+  useEffect(() => {
+    if (!mappedRoot || countLeaves(mappedRoot) <= AUTO_COLLAPSE_LEAVES) {
+      setCollapsedIds(new Set());
+      return;
+    }
+    setCollapsedIds(new Set(mappedRoot.children.filter((child) => child.children.length > 0).map((child) => child.id)));
+  }, [mappedRoot]);
   const canvasHeight = useMemo(() => {
     const leaves = countLeaves(visibleRoot);
     if (layout === "horizontal") {
-      const byLeaves = leaves * 34 + 100;
-      return Math.max(360, Math.min(700, byLeaves));
+      // matches the dagre layout below: 42px card + 28px gap per leaf
+      const byLeaves = leaves * 70 + 72;
+      return Math.max(360, Math.min(760, byLeaves));
     }
     if (layout === "vertical") {
       const byLeaves = leaves * 54 + 180;
@@ -531,7 +543,7 @@ const buildHorizontalDagreLayout = (
     rankdir: "LR",
     align: "UL",
     ranksep: 136,
-    nodesep: 68,
+    nodesep: 28,
     edgesep: 24,
     marginx: 40,
     marginy: 36

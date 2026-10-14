@@ -174,14 +174,41 @@ const buildOutline = (title: string, depth: number, headings: string[], chunks: 
   return { title, items, metadata: { suggestedTags: tagsFrom(title, chunks) } };
 };
 
+const CLOZE_STOPWORDS = new Set([
+  "about", "after", "also", "among", "because", "before", "being", "between", "could", "during", "every", "first",
+  "found", "their", "there", "these", "those", "through", "typically", "under", "usually", "where", "which", "while",
+  "would", "other", "known", "since", "until", "within", "without", "including", "called",
+  "более", "будет", "было", "были", "всего", "время", "когда", "который", "которая", "которые", "между", "может",
+  "можно", "много", "очень", "после", "перед", "потому", "также", "такой", "тогда", "чтобы", "этого", "этой"
+]);
+
+// Cloze card: hide the most specific word of the sentence and ask for it.
+const pickClozeTerm = (sentence: string, title: string): string | null => {
+  const titleWords = new Set(title.toLowerCase().match(/[a-zа-яё]+/gi) ?? []);
+  const words = sentence.match(/[A-Za-zА-Яа-яЁё][A-Za-zА-Яа-яЁё-]{4,}/g) ?? [];
+  const candidates = words.filter((word) => {
+    const lower = word.toLowerCase();
+    return !CLOZE_STOPWORDS.has(lower) && !titleWords.has(lower);
+  });
+  if (candidates.length === 0) return null;
+  const proper = candidates.find((word, index) => index > 0 && /^[A-ZА-ЯЁ]/.test(word) && sentence.indexOf(word) > 0);
+  return proper ?? [...candidates].sort((a, b) => b.length - a.length)[0];
+};
+
 const buildFlashcards = (title: string, chunks: string[]): Record<string, unknown> => {
-  const sentences = splitSentences(chunks.join(" "));
-  const cards = sentences.slice(0, 16).map((sentence, index) => ({
-    id: `card-${index + 1}`,
-    front: tr(`What matters about: ${shortLabel(sentence, 6)}?`, `Что важно знать про: ${shortLabel(sentence, 6)}?`),
-    back: sentence,
-    difficulty: index % 3 === 0 ? "easy" : index % 3 === 1 ? "medium" : "hard"
-  }));
+  const sentences = splitSentences(chunks.join(" ")).filter((sentence) => sentence.length <= 260);
+  const cards = sentences.slice(0, 16).map((sentence, index) => {
+    const term = pickClozeTerm(sentence, title);
+    const front = term
+      ? `${tr("Fill the gap", "Заполни пропуск")}: ${sentence.replace(term, "_____")}`
+      : tr(`What matters about: ${shortLabel(sentence, 6)}?`, `Что важно знать про: ${shortLabel(sentence, 6)}?`);
+    return {
+      id: `card-${index + 1}`,
+      front,
+      back: term ? `${term}. ${sentence}` : sentence,
+      difficulty: index % 3 === 0 ? "easy" : index % 3 === 1 ? "medium" : "hard"
+    };
+  });
   return { title, cards, metadata: { suggestedTags: tagsFrom(title, chunks) } };
 };
 
@@ -298,6 +325,10 @@ export const generateQuickNotes = (title: string, chunks: string[]): string => {
   return [`## ${title}`, "", summary, "", "## Key points", bullets, "", "## Actions", "- Review and refine notes", "- Link related concepts"].join("\n");
 };
 
+// Navigation and reference sections that should not become mind map branches.
+const SERVICE_HEADINGS =
+  /^(contents|table of contents|navigation menu|see also|references|notes|external links|further reading|bibliography|содержание|см\. также|примечания|литература|ссылки)$/i;
+
 export const generateLocally = ({
   outputMode,
   depth,
@@ -311,7 +342,9 @@ export const generateLocally = ({
 }): unknown => {
   lang = detectLang(text);
   const title = parsedPage.title.trim() || "Untitled page";
-  const headings = (parsedPage.headings ?? []).map((heading) => heading.trim()).filter(Boolean);
+  const headings = (parsedPage.headings ?? [])
+    .map((heading) => heading.trim())
+    .filter((heading) => heading && !SERVICE_HEADINGS.test(heading));
   const paragraphs = (parsedPage.paragraphs ?? []).map((part) => part.trim()).filter(Boolean);
   const lists = (parsedPage.lists ?? []).map((part) => part.trim()).filter(Boolean);
   const focus = parsedPage.selectedText?.trim();

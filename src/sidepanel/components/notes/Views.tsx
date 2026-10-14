@@ -363,7 +363,7 @@ export const TimelineView = ({ data }: { data: unknown }) => {
         {events.map((event, idx) => (
           <motion.article
             key={event.id ?? String(idx)}
-            className={`relative rounded-xl border p-3 ${event.isMilestone ? "border-violet-400/60 bg-violet-500/10" : "border-slate-600 bg-slate-800/40"}`}
+            className={`relative rounded-xl border p-3 ${event.isMilestone ? "border-violet-400/60 bg-violet-500/10" : "border-slate-600 bg-slate-900"}`}
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: idx * 0.05 }}

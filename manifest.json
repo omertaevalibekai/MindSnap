@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MindSnap — Mind Maps & Smart Notes",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "default_locale": "en",
   "description": "Turn any webpage into mind maps, flashcards, outlines, summaries and more",
   "permissions": ["activeTab", "storage", "sidePanel", "contextMenus"],
