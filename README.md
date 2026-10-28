@@ -1,3 +1,5 @@
+[![CI](https://github.com/omertaevalibekai/MindSnap/actions/workflows/ci.yml/badge.svg)](https://github.com/omertaevalibekai/MindSnap/actions/workflows/ci.yml)
+
 <div align="center">
 
 # MindSnap
@@ -105,12 +107,12 @@ flowchart LR
 
 ### From source
 
-Requires Node.js 20+.
+Requires Node.js 22.16+.
 
 ```bash
 git clone https://github.com/omertaevalibekai/MindSnap.git
 cd MindSnap
-npm install
+npm ci
 npm run build
 ```
 
@@ -159,3 +161,19 @@ Issues and pull requests are welcome. Run `npm run build` before opening a PR
 ## License
 
 [MIT](LICENSE)
+
+## Development checks
+
+Use Node.js 22.16 or later (CI uses Node.js 22):
+
+```sh
+npm ci
+npm run lint
+npm run typecheck
+npm run test:ci
+npm run build
+```
+
+No `.env` file or API keys are required for the default local application.
+Do not commit local credentials or browser data. Dependency updates are proposed
+weekly by Dependabot and must pass the same CI checks.

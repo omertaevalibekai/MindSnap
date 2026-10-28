@@ -1,13 +1,16 @@
 {
   "name": "mindsnap",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "test:ci": "vitest run",
+    "lint": "eslint src --max-warnings 0"
   },
   "dependencies": {
     "@crxjs/vite-plugin": "^2.4.0",
@@ -32,13 +35,18 @@
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "@typescript-eslint/parser": "^8.72.1",
     "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.5.0",
+    "eslint": "^10.13.0",
     "jsdom": "^29.0.2",
     "postcss": "^8.5.10",
     "tailwindcss": "^4.2.4",
     "typescript": "~6.0.2",
     "vite": "^8.0.9",
     "vitest": "^4.1.5"
+  },
+  "engines": {
+    "node": ">=22.16.0"
   }
 }

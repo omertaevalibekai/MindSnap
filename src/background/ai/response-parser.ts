@@ -14,7 +14,7 @@ const toMindMapNode = (label: string, value: unknown, path: string): Record<stri
   const theses = Array.isArray(rawTheses)
     ? rawTheses.map((item) => String(item).trim()).filter(Boolean).slice(0, 4)
     : [];
-  const scalarKeys = new Set(["id", "summary", "importance", "nodeType", "metadata", "year_introduced", "year_invented", "origin", "inventor"]);
+  const scalarKeys = new Set(["id", "summary", "theses", "importance", "nodeType", "metadata", "year_introduced", "year_invented", "origin", "inventor"]);
 
   const children: Record<string, unknown>[] = [];
   const pushChild = (childLabel: string, childValue: unknown, index: number): void => {
