@@ -177,3 +177,13 @@ npm run build
 No `.env` file or API keys are required for the default local application.
 Do not commit local credentials or browser data. Dependency updates are proposed
 weekly by Dependabot and must pass the same CI checks.
+
+Browser smoke test (bundled Chromium, isolated profile):
+
+```sh
+npm run build
+npx playwright install chromium
+npm run test:browser
+```
+
+Checks MV3 startup, content-script parsing, the side-panel document, local generation and storage persistence. Linux CI runs it on each PR. It does not exercise the native browser side-panel button.

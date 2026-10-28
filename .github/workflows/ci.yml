@@ -24,3 +24,11 @@ jobs:
       - run: npm run typecheck
       - run: npm run test:ci
       - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: browser-check
+          path: test-results/
+          if-no-files-found: ignore
